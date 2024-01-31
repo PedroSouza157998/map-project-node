@@ -3,11 +3,11 @@ const { Pool } = require('pg');
 const { menorCaminho } = require("../../utils/functions")
 
 const db = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
-    password: 'admin',
-    port: 5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
 })
 
 const getAll = async (req, res) => {
