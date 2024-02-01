@@ -27,6 +27,7 @@ const getAll = async (req, res) => {
 const create = async (req, res) => {
     try {
 
+        console.log(req)
         const { telefone, nome, email, latitude, longitude} = req.body;
 
         const query = `
@@ -72,8 +73,37 @@ const findRoute = async (req, res) => {
     }
 }
 
+const deleteById = async (req, res) => {
+    try {
+        
+        const {id} = req.params;
+
+        const query = `DELETE
+        FROM
+        clientes WHERE id= $1 ;`;
+
+        const {rows: clientes} = await db.query(query, [id]);
+        const allPoints = [
+            {'0': 0, '1': 0, 'nome': 'Facilita Jurídico'},
+            ...clientes.map((client) => ({
+            '0': client.latitude, 
+            '1': client.longitude, 
+            nome: client.nome,
+            id: client.id,
+        }))];
+
+        const smallerPath = menorCaminho(allPoints).map((e, index) => ({...e, index}));
+
+        return res.json({ success: true, data: smallerPath });
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     create,
     getAll,
-    findRoute
+    findRoute,
+    deleteById
 }
